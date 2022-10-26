@@ -1,0 +1,22 @@
+groups:
+- name: k8s
+  rules:
+  - alert: ContadorNodes
+    expr: count(kube_node_created) < 4
+    for: 1m 
+    labels:
+      team: k8s
+    annotations:
+      summary: Quantidade de nodes baixa
+      description: "Valor: {{$value}}"
+
+- name: web
+  rules:
+  - alert: WebQuantidadeAcessos
+    expr: sum(rate(http_requests_total[30s])) by (app, path) > 1
+    for: 1m 
+    labels:
+      team: web
+    annotations:
+      summary: Quantidade de chamadas muito alta
+      description: "Endpoint: {{$labels.path}} Valor: {{$value}}"
