@@ -1,0 +1,24 @@
+# Configurações globais que se aplicam a toda a instância do Prometheus
+global:
+  # Define com qual frequência o Prometheus coleta métricas de seus alvos (targets)
+  scrape_interval: 15s
+  
+  # Define com qual frequência o Prometheus avalia as regras de alerta
+  evaluation_interval: 15s
+
+# Configurações dos targets (alvos) para scraping (coleta) de métricas
+scrape_configs:
+  # Job para coletar métricas do próprio Prometheus
+  - job_name: "prometheus"
+    static_configs:
+      # Endereço onde o Prometheus está disponível (interface local na porta 9090)
+      - targets: ["localhost:9090"]
+
+  # Job para coletar métricas da aplicação Kube-News
+  - job_name: "kube-news"
+    static_configs:
+      # Endereço onde a aplicação está disponível (serviço "app" na porta 8080)
+      - targets: ["app:8080"]
+    # Caminho onde a aplicação expõe suas métricas no formato do Prometheus
+    metrics_path: /metrics
+

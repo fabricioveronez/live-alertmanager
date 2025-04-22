@@ -1,0 +1,53 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres:14.3-alpine
+    container_name: kube-news-db
+    environment:
+      POSTGRES_PASSWORD: Pg#123
+      POSTGRES_USER: kubedevnews
+      POSTGRES_DB: kubedevnews
+    ports:
+      - "5432:5432"
+    networks:
+      - kube-news-network
+    restart: always
+
+  app:
+    build: 
+      context: ./src
+      dockerfile: Dockerfile
+    container_name: kube-news-app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    environment:
+      DB_HOST: postgres
+      DB_DATABASE: kubedevnews
+      DB_USERNAME: kubedevnews
+      DB_PASSWORD: Pg#123
+    networks:
+      - kube-news-network
+    restart: always
+
+  prometheus:
+    image: prom/prometheus:v3.3.0
+    container_name: kube-news-prometheus
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus/rules:/etc/prometheus/rules
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    ports:
+      - "9090:9090"
+    networks:
+      - kube-news-network
+    restart: always
+    depends_on:
+      - app
+
+networks:
+  kube-news-network:
+    driver: bridge
