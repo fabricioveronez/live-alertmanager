@@ -1,0 +1,30 @@
+groups:
+  - name: alertas_disponibilidade
+    rules:  
+      - alert: TaxaDeErroAlta
+        expr: sum(rate(http_request_duration_seconds_count{status_code=~"[45].."}[5m])) / sum(rate(http_request_duration_seconds_count[5m])) > 0.05
+        for: 1m
+        labels:
+          severity: high
+        annotations:
+          summary: "Taxa de erro alta"
+          description: "A taxa de erro está acima de 5% nos últimos 5 minutos."
+      - alert: TaxaDeErroMuitoAlta
+        expr: sum(rate(http_request_duration_seconds_count{status_code=~"[45].."}[5m])) / sum(rate(http_request_duration_seconds_count[5m])) > 0.15
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Taxa de erro muito alta"
+          description: "A taxa de erro está acima de 5% nos últimos 5 minutos." 
+
+  - name: alertas_latencia
+    rules:
+      - alert: LatenciaAlta
+        expr: histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le)) > 0.5        
+        for: 1m
+        labels: 
+          severity: medium
+        annotations: 
+          summary: "Latência alta"
+          description: "A latência de 95% das requisições está acima de 0.5 segundos nos últimos 5 minutos."

@@ -1,0 +1,32 @@
+global:
+
+  resolve_timeout: 5m
+
+route:
+  group_by: ['alertname', 'severity']
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 30m
+
+  receiver: 'webhook-notification-default'
+
+  routes:
+    - match:
+        severity: critical
+      receiver: 'webhook-notification-critical'
+    - match:
+        severity: high
+      receiver: 'webhook-notification-high'    
+
+receivers:
+  - name: 'webhook-notification-default'
+    webhook_configs:
+      - url: 'https://webhook.site/620604d9-dffa-47fa-8ad9-d7c7d3d8009f'
+
+  - name: 'webhook-notification-critical'
+    webhook_configs:
+      - url: 'https://webhook.site/620604d9-dffa-47fa-8ad9-d7c7d3d8009f'
+
+  - name: 'webhook-notification-high'
+    webhook_configs:
+      - url: 'https://webhook.site/620604d9-dffa-47fa-8ad9-d7c7d3d8009f'

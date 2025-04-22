@@ -6,6 +6,16 @@ global:
   # Define com qual frequência o Prometheus avalia as regras de alerta
   evaluation_interval: 15s
 
+rule_files:
+  # Caminho para o arquivo de regras de alerta
+  - "/etc/prometheus/rules/alerts.yaml"
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: ["alertmanager:9093"]
+
+
 # Configurações dos targets (alvos) para scraping (coleta) de métricas
 scrape_configs:
   # Job para coletar métricas do próprio Prometheus

@@ -35,7 +35,7 @@ services:
     container_name: kube-news-prometheus
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-      - ./prometheus/rules:/etc/prometheus/rules
+      - ./prometheus/alerts.yaml:/etc/prometheus/rules/alerts.yaml
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
     ports:
@@ -46,6 +46,17 @@ services:
     depends_on:
       - app
 
+  alertmanager:
+    image: prom/alertmanager:v0.28.1
+    volumes:
+      - ./prometheus/alert-manager.yaml:/etc/alertmanager/alertmanager.yml
+    command:
+      - '--config.file=/etc/alertmanager/alertmanager.yml'
+    ports:
+      - "9093:9093"
+    networks:
+      - kube-news-network
+      
 networks:
   kube-news-network:
     driver: bridge
