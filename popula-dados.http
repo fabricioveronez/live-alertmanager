@@ -49,5 +49,13 @@ Content-Type: application/json
 
 ### 
 
-PUT http://localhost:8080/unhealth
+PUT http://localhost:8080/unhealthy
+Content-Type: application/json
+### 
+
+PUT http://localhost:8080/healthy
+Content-Type: application/json
+### 
+
+PUT http://localhost:8080/latency/1000
 Content-Type: application/json
